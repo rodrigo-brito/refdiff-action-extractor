@@ -1,6 +1,8 @@
 package refdiff.extractor;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -43,10 +45,20 @@ public class RefDiffExtractor {
 		System.out.println("REV_BEFORE: " +System.getenv("REV_BEFORE"));
 		System.out.println("REV_AFTER: " +System.getenv("REV_AFTER"));
 		
-		scanRefactorings(System.getenv("GITHUB_WORKSPACE") +"/.git", System.getenv("REV_BEFORE"), System.getenv("REV_AFTER"));
+		String ref = System.getenv("GITHUB_REF");
+		Pattern pattern = Pattern.compile("pull/(\\d+)");
+	    Matcher matcher = pattern.matcher(ref);
+	    if (!matcher.find()) {
+	    	System.err.println("Invalid PR reference: "+ref);
+	    }
+	    
+	    int PR = Integer.valueOf(matcher.group(1));
+	    System.out.println("PR_NUMBER = "+PR);
+		
+		scanRefactorings(System.getenv("GITHUB_WORKSPACE") +"/.git", System.getenv("REV_BEFORE"), System.getenv("REV_AFTER"), PR);
 	}
 
-	private static void scanRefactorings(String repositoryPath, String reference, String commitAfter) {
+	private static void scanRefactorings(String repositoryPath, String reference, String commitAfter, int PR) {
 		File tempFolder = new File("temp");
 		JavaPlugin javaPlugin = new JavaPlugin(tempFolder);
 		RefDiff refDiffJava = new RefDiff(javaPlugin);
@@ -56,14 +68,14 @@ public class RefDiffExtractor {
 			try {
 				revAfter = rw.parseCommit(repo.resolve(commitAfter));
 				RevCommit head = rw.parseCommit(repo.resolve(reference));
-				saveRefactorign(refDiffJava.computeDiffBetweenRevisions(repo, head, revAfter));
+				saveRefactorign(refDiffJava.computeDiffBetweenRevisions(repo, head, revAfter), PR);
 			} catch (Exception e) {
 				System.err.println("Error on get content from commits: "+e.getMessage());
 			}
 		}
 	}
 
-	private static void saveRefactorign(CstDiff diff) {
+	private static void saveRefactorign(CstDiff diff, int PR) {
 		List<Refactoring> refactorings = new ArrayList<>();
 		for (Relationship rel : diff.getRefactoringRelationships()) {
 			Refactoring refactoring = Refactoring.FromRelationship(rel);
@@ -72,7 +84,7 @@ public class RefDiffExtractor {
 		}
 		
 		String content = new Gson().toJson(refactorings);
-		HttpPost post = new HttpPost(String.format("https://localhost:8080/pr/%s", System.getenv("GITHUB_REPOSITORY")));
+		HttpPost post = new HttpPost(String.format("http://localhost:8080/%s/%d", System.getenv("GITHUB_REPOSITORY"), PR));
 		System.out.println(content);
 		try {
 			HttpEntity entity = new StringEntity(content);
