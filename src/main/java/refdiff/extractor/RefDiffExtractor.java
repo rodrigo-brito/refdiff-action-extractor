@@ -84,7 +84,7 @@ public class RefDiffExtractor {
 		}
 		
 		String content = new Gson().toJson(refactorings);
-		HttpPost post = new HttpPost(String.format("http://localhost:8080/%s/%d", System.getenv("GITHUB_REPOSITORY"), PR));
+		HttpPost post = new HttpPost(String.format("http://refdiff.brito.com.br/%s/%d", System.getenv("GITHUB_REPOSITORY"), PR));
 		System.out.println(content);
 		try {
 			HttpEntity entity = new StringEntity(content);
