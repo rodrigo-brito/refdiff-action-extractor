@@ -8,33 +8,35 @@ import com.google.gson.annotations.SerializedName;
 import refdiff.core.diff.Relationship;
 
 public class Refactoring {
-	@SerializedName("type") 
+	@SerializedName("type")
 	private String type;
-	@SerializedName("object_type") 
+	@SerializedName("object_type")
 	private String objectType;
-	
-	@SerializedName("before_local_name") 
+
+	@SerializedName("before_local_name")
 	private String beforeLocalName;
-	@SerializedName("before_file_name") 
+	@SerializedName("before_file_name")
 	private String beforeFileName;
-	@SerializedName("before_begin") 
+	@SerializedName("before_begin")
 	private int beforeBegin;
-	@SerializedName("before_end") 
+	@SerializedName("before_end")
 	private int beforeEnd;
-	@SerializedName("before_line_number") 
+	@SerializedName("before_line_number")
 	private int beforeLineNumber;
 
-	@SerializedName("after_local_name") 
+	@SerializedName("after_local_name")
 	private String afterLocalName;
-	@SerializedName("after_file_name") 
+	@SerializedName("after_file_name")
 	private String afterFileName;
-	@SerializedName("after_begin") 
+	@SerializedName("after_begin")
 	private int afterBegin;
-	@SerializedName("after_end") 
+	@SerializedName("after_end")
 	private int afterEnd;
-	@SerializedName("after_line_number") 
+	@SerializedName("after_line_number")
 	private int afterLineNumber;
-	
+	@SerializedName("diff")
+	private String diff;
+
 	public static Refactoring FromRelationship(Relationship rel) {
 		Refactoring refactoring = new Refactoring();
 		refactoring.type = rel.getType().toString();
@@ -53,6 +55,110 @@ public class Refactoring {
 		refactoring.afterLineNumber = rel.getNodeAfter().getLocation().getLine();
 	
 		return refactoring;
+	}
+	
+	public String getDiff() {
+		return diff;
+	}
+
+	public void setDiff(String diff) {
+		this.diff = diff;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getObjectType() {
+		return objectType;
+	}
+
+	public void setObjectType(String objectType) {
+		this.objectType = objectType;
+	}
+
+	public String getBeforeLocalName() {
+		return beforeLocalName;
+	}
+
+	public void setBeforeLocalName(String beforeLocalName) {
+		this.beforeLocalName = beforeLocalName;
+	}
+
+	public String getBeforeFileName() {
+		return beforeFileName;
+	}
+
+	public void setBeforeFileName(String beforeFileName) {
+		this.beforeFileName = beforeFileName;
+	}
+
+	public int getBeforeBegin() {
+		return beforeBegin;
+	}
+
+	public void setBeforeBegin(int beforeBegin) {
+		this.beforeBegin = beforeBegin;
+	}
+
+	public int getBeforeEnd() {
+		return beforeEnd;
+	}
+
+	public void setBeforeEnd(int beforeEnd) {
+		this.beforeEnd = beforeEnd;
+	}
+
+	public int getBeforeLineNumber() {
+		return beforeLineNumber;
+	}
+
+	public void setBeforeLineNumber(int beforeLineNumber) {
+		this.beforeLineNumber = beforeLineNumber;
+	}
+
+	public String getAfterLocalName() {
+		return afterLocalName;
+	}
+
+	public void setAfterLocalName(String afterLocalName) {
+		this.afterLocalName = afterLocalName;
+	}
+
+	public String getAfterFileName() {
+		return afterFileName;
+	}
+
+	public void setAfterFileName(String afterFileName) {
+		this.afterFileName = afterFileName;
+	}
+
+	public int getAfterBegin() {
+		return afterBegin;
+	}
+
+	public void setAfterBegin(int afterBegin) {
+		this.afterBegin = afterBegin;
+	}
+
+	public int getAfterEnd() {
+		return afterEnd;
+	}
+
+	public void setAfterEnd(int afterEnd) {
+		this.afterEnd = afterEnd;
+	}
+
+	public int getAfterLineNumber() {
+		return afterLineNumber;
+	}
+
+	public void setAfterLineNumber(int afterLineNumber) {
+		this.afterLineNumber = afterLineNumber;
 	}
 
 	@Override
@@ -75,6 +181,7 @@ public class Refactoring {
 		map.put("after_begin", this.afterBegin);
 		map.put("after_end", this.afterEnd);
 		map.put("after_line_number", this.afterLineNumber);
+		map.put("diff", this.diff);
 		return map;
 	}
 	
