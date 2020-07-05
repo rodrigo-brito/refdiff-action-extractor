@@ -36,6 +36,8 @@ public class Refactoring {
 	private int afterLineNumber;
 	@SerializedName("diff")
 	private String diff;
+	@SerializedName("extraction")
+	private String extraction;
 
 	public static Refactoring FromRelationship(Relationship rel) {
 		Refactoring refactoring = new Refactoring();
@@ -64,6 +66,15 @@ public class Refactoring {
 	public void setDiff(String diff) {
 		this.diff = diff;
 	}
+	
+	public String getExtraction() {
+		return extraction;
+	}
+
+	public void setExtraction(String extraction) {
+		this.extraction = extraction;
+	}
+
 
 	public String getType() {
 		return type;
@@ -181,7 +192,12 @@ public class Refactoring {
 		map.put("after_begin", this.afterBegin);
 		map.put("after_end", this.afterEnd);
 		map.put("after_line_number", this.afterLineNumber);
-		map.put("diff", this.diff);
+		if (this.diff != null && !this.diff.isEmpty()) {
+			map.put("diff", this.diff);			
+		}
+		if (this.extraction != null && !this.extraction.isEmpty()) {
+			map.put("extraction", this.extraction);			
+		}
 		return map;
 	}
 	
