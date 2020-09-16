@@ -76,6 +76,12 @@ public class RefDiffExtractor {
 		System.out.println("REV_AFTER: " +System.getenv("REV_AFTER"));
 		System.out.println("LANGUAGE: " +System.getenv("LANGUAGE"));
 		
+		int timeout = 120;
+		if (System.getenv("TIMEOUT") != null) {
+			timeout = Integer.valueOf(System.getenv("TIMEOUT"));
+		}
+		System.out.println("TIMEOUT (s): " + timeout);
+		
 		String ref = System.getenv("GITHUB_REF");
 		if (ref == null || ref.isEmpty()) {
 			System.err.println("Invalid PR reference: "+ref);
@@ -105,7 +111,7 @@ public class RefDiffExtractor {
 						System.err.println("Error on proccess refactorings: " + e.getMessage());
 					}
 				}
-			}, 60, TimeUnit.SECONDS);
+			}, timeout, TimeUnit.SECONDS);
 		}
 		catch (TimeoutException e) {
 			System.out.println("Timeout :(");
@@ -130,7 +136,7 @@ class Task {
 
 	public void run() throws Exception {
 		String credentialsFile = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
-		
+
 		Firestore db = null;
 		if (credentialsFile != null && !credentialsFile.isEmpty()) {
 			GoogleCredentials credentials = GoogleCredentials.getApplicationDefault(); // file from GOOGLE_APPLICATION_CREDENTIALS
